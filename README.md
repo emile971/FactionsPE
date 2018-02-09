@@ -5,7 +5,10 @@
 ## TODO
 
 - [ ] FactionsPE Plugin
-- [ ] Fully Working Language
+- [ ] Languages:
+  - [x] English
+  - [x] French
+  - [ ] Other Languages
 
 * Please tell us in issue what feature we should add.
 

@@ -45,8 +45,13 @@ class Main extends PluginBase{
 
 	public function RegConfig(){
 		@mkdir($this->getDataFolder());
-		$this->saveResource("languages/en/gameplay.yml");
 
-		$this->engameplay = new Config($this->getDataFolder() . "languages/en/gameplay.yml", Config::YAML);
+		$this->saveResource("config.yml");
+		$this->cfg = new Config($this->getDataFolder() . "config.yml", Config::YAML);
+
+		#Language
+		$this->language = $this->cfg->get("language");
+		$this->saveResource("languages/{$this->language}/gameplay.yml");
+		$this->gameplay = new Config($this->getDataFolder() . "languages/{$this->language}/gameplay.yml", Config::YAML);
 	}
 }

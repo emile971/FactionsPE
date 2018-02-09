@@ -39,7 +39,7 @@ class FactionCommand extends PluginCommand{
 		$plugin = $this->getPlugin();
 
 		if(count($args) < 1){
-			$sender->sendMessage("{$this->getPlugin()->engameplay->get("command-usage")}");
+			$sender->sendMessage("{$this->getPlugin()->gameplay->get("command-usage")}");
 			return true;
 		}
 
@@ -49,7 +49,7 @@ class FactionCommand extends PluginCommand{
 			break;
 			
 			default:
-			$sender->sendMessage("{$this->getPlugin()->engameplay->get("command-usage")}");
+			$sender->sendMessage("{$this->getPlugin()->gameplay->get("command-usage")}");
 			break;
 		}
 		return true;
