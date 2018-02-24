@@ -2,5 +2,6 @@
 #Languages Available:
 # en - English
 # fr - French
-language: en
+# de - German
+Language: en
 ...

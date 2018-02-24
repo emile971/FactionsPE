@@ -16,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+*/
 
 declare(strict_types = 1);
 
@@ -27,11 +27,11 @@ use pocketmine\utils\{Config, TextFormat};
 
 use FactionsPE\Commands\FactionCommand;
 
-class Main extends PluginBase{
+class Main extends PluginBase {
 
 	public function onEnable(){
-		$this->RegCommands();
-		$this->RegConfig();
+		$this->registerCommands();
+		$this->initConfig();
 		$this->getLogger()->info(TextFormat::GREEN . "Enabled.");
 	}
 
@@ -39,19 +39,37 @@ class Main extends PluginBase{
 		$this->getLogger()->info(TextFormat::RED . "Disabled.");
 	}
 
-	public function RegCommands(){
-		$this->getServer()->getCommandMap()->register("F", new FactionCommand("F", $this));
+	public function registerCommands(){
+		$this->getServer()->getCommandMap()->register("Factions", new FactionCommand("f", $this));
 	}
 
-	public function RegConfig(){
+	public function translate(string $totranslate){
+	    $config = new Config($this->getDataFolder()."languages/".$this->getLanguage()."/"."gameplay.yml");
+	    return $config->get($totranslate);
+    }
+
+    public function getLanguage(){
+	    switch ($this->getConf("Language")){
+            case "en":
+                return "en";
+                break;
+            case "de":
+                return "de";
+            case "fr":
+                return "fr";
+            default:
+                return "en"; //FallBack language
+        }
+    }
+
+    public function getConf(string $get){
+        $config = new Config($this->getDataFolder()."config.yml", Config::YAML);
+        return $config->get($get);
+    }
+
+    public function initConfig(){
 		@mkdir($this->getDataFolder());
-
 		$this->saveResource("config.yml");
-		$this->cfg = new Config($this->getDataFolder() . "config.yml", Config::YAML);
-
-		#Language
-		$this->language = $this->cfg->get("language");
-		$this->saveResource("languages/{$this->language}/gameplay.yml");
-		$this->gameplay = new Config($this->getDataFolder() . "languages/{$this->language}/gameplay.yml", Config::YAML);
+		$this->saveResource("languages/".$this->getLanguage()."/gameplay.yml");
 	}
 }
