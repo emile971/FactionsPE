@@ -23,7 +23,7 @@ declare(strict_types = 1);
 namespace FactionsPE;
 
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\{Config, TextFormat};
+use pocketmine\utils\{Config, TextFormat as C};
 
 use FactionsPE\Commands\FactionCommand;
 
@@ -32,11 +32,11 @@ class Main extends PluginBase {
 	public function onEnable(){
 		$this->registerCommands();
 		$this->initConfig();
-		$this->getLogger()->info(TextFormat::GREEN . "Enabled.");
+		$this->getLogger()->info(C::GREEN . "Enabled.");
 	}
 
 	public function onDisable(){
-		$this->getLogger()->info(TextFormat::RED . "Disabled.");
+		$this->getLogger()->info(C::RED . "Disabled.");
 	}
 
 	public function registerCommands(){
