@@ -18,9 +18,9 @@ class DamageEvent extends EventListener {
 
     public function onDamage(EntityDamageEvent $event){
         $entity = $event->getEntity();
-        $cause = $event->getCause();
-        if ($event instanceof EntityDamageByEntityEvent){
-            $damager = $event->getDamager();
+        $lastdmg = $entity->getLastDamageCause();
+        if ($lastdmg instanceof EntityDamageByEntityEvent){
+            $damager = $lastdmg->getDamager();
             if ($entity instanceof Player and $damager instanceof Player){
                 if ($this->plugin->isInSameFaction($damager, $entity)){
                     $event->setCancelled(true);

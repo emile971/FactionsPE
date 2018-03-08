@@ -39,6 +39,7 @@ class FactionsPE extends PluginBase {
     private function initConfig() : void{
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder()."factions/");
+        @mkdir($this->getDataFolder()."players/");
         $this->saveResource("config.yml");
         $this->saveResource("languages/".$this->getLanguage()."/gameplay.yml");
     }
