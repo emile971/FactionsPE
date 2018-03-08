@@ -4,6 +4,9 @@ faction-already-exists: §cA Faction with that name already exists.
 not-faction-leader: §eYou'r not the leader of the faction.
 faction-name-toolong: §cThe Faction is to long.
 not-a-player: §bYou need to be a player to do this.
+faction-created: §aYou created an faction.
 faction-deleted: §4You deleted our Faction.
 cant-attack-fmember: §cYou can't attack a faction member.
+has-already-a-faction: §cYou have already a faction.
+have-not-a-faction: §cYou haven't a faction.
 ...

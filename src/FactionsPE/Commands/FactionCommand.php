@@ -37,44 +37,52 @@ class FactionCommand extends PluginCommand {
         parent::__construct($name, $plugin);
 	}
 
-	public function execute(CommandSender $sender, string $alias, array $args){
-	    if ($sender instanceof Player) {
-            if (empty($args)) {
-                $sender->sendMessage($this->plugin->translate("command-usage"));
-            }
-            switch ($args[0]) {
-                case "create":
-                    if (strlen($args[1]) < $this->plugin->getConf("max-lenght")) {
-                        if (!file_exists($this->plugin->getDataFolder()."factions/".$args[1].".yml")) {
-                            $this->plugin->createFaction($args[1], $sender);
-                            $this->plugin->setPFaction($sender, $args[1]);
+	public function execute(CommandSender $sender, string $alias, array $args) {
+        if ($sender instanceof Player) {
+            if (isset($args[0])) {
+                switch ($args[0]) {
+                    case "create":
+                        if (!$this->plugin->hasFaction($sender)) {
+                            if (!empty($args[1])) {
+                                if (strlen($args[1]) < $this->plugin->getConf("max-lenght")) {
+                                    if (!file_exists($this->plugin->getDataFolder() . "factions/" . $args[1] . ".yml")) {
+                                        $this->plugin->createFaction($args[1], $sender);
+                                        $this->plugin->setPFaction($sender, $args[1]);
+                                        $sender->sendMessage($this->plugin->translate("faction-created"));
+                                    } else {
+                                        $sender->sendMessage($this->plugin->translate("faction-already-exists"));
+                                    }
+                                } else {
+                                    $sender->sendMessage($this->plugin->translate("faction-name-toolong"));
+                                }
+                            }
                         }else{
-                            $sender->sendMessage($this->plugin->translate("faction-already-exists"));
+                            $sender->sendMessage($this->plugin->translate("has-already-a-faction"));
                         }
-                    }else{
-                        $sender->sendMessage($this->plugin->translate("faction-name-toolong"));
-                    }
-                    break;
-                case "delete":
-                case "del":
-                    $this->plugin->deleteFaction($sender);
-                    break;
-                case "help":
-                case "h":
-                    $this->sendHelpList($sender);
-                    break;
-                default:
-                    $sender->sendMessage($this->plugin->translate("command-usage"));
+                        break;
+                    case "delete":
+                    case "del":
+                        $this->plugin->deleteFaction($sender);
+                        break;
+                    case "invite":
+                        break;
+                    case "help":
+                    case "h":
+                        $this->sendHelpList($sender);
+                        break;
+                    default:
+                        $sender->sendMessage($this->plugin->translate("command-usage"));
+                }
             }
-        }else{
-	        $sender->sendMessage($this->plugin->translate("not-a-player"));
+        } else {
+            $sender->sendMessage($this->plugin->translate("not-a-player"));
         }
-	}
+    }
 
 	private function sendHelpList(Player $player) : void{
 	    $player->sendMessage(C::YELLOW."=| ".C::DARK_PURPLE."Factions".C::GREEN." Help".C::YELLOW." |=");
         $player->sendMessage(C::GRAY."- /f help (Shows this list)");
         $player->sendMessage(C::GRAY."- /f create {name} (Create a Faction)");
-        $player->sendMessage(C::GRAY."- /f delete {Deletes the faction}");
+        $player->sendMessage(C::GRAY."- /f delete (Deletes the faction)");
     }
 }

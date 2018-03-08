@@ -4,17 +4,18 @@
  
 ## TODO
 
-- [ ] FactionsPE Plugin
-- [ ] Languages:
+- Languages:
   - [x] English
   - [x] French
-  - [ ] Other Languages
+  - [x] German
 
-* Please tell us in issue what feature we should add.
+* Please tell us in issue what for feature we should add.
 
 ## Features:
 
-- [x] Test
+- [x] Faction can be Created
+- [x] Faction can be Deleted
+- [x] MultiLang
 
  ## Need Help?
  

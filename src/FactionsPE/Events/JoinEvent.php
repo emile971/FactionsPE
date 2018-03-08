@@ -16,8 +16,7 @@ class JoinEvent extends EventListener {
 
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
-        $pname = $player->getName();
-        if (!file_exists($this->plugin->getDataFolder()."players/".$pname.".yml")){
+        if (!file_exists($this->plugin->getDataFolder()."players/".$player->getName().".yml")){
             $this->plugin->initPConfig($player);
         }
     }

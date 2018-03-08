@@ -22,6 +22,8 @@ declare(strict_types = 1);
 
 namespace FactionsPE;
 
+use pocketmine\command\overload\CommandEnum;
+use pocketmine\command\overload\CommandParameter;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\{Config, TextFormat as C};
@@ -32,6 +34,7 @@ class FactionsPE extends PluginBase {
 
 	public function onEnable(){
 		$this->registerCommands();
+		$this->registerCommandParameters();
 		$this->initConfig();
 		$this->getLogger()->info(C::GREEN . "Enabled.");
 	}
@@ -53,6 +56,12 @@ class FactionsPE extends PluginBase {
 		$this->getServer()->getCommandMap()->register("Factions", new FactionCommand("f", $this));
 	}
 
+	private function registerCommandParameters() : void{
+	    if($this->getServer()->getName() == "Altay"){
+	        $this->getServer()->getCommandMap()->getCommand("f")->getOverload("default")->setParameter(0, new CommandParameter("args", CommandParameter::ARG_TYPE_STRING, false, CommandParameter::ARG_FLAG_ENUM, new CommandEnum("args", ["help", "create", "delete"])));
+        }
+    }
+
 	public function translate(string $totranslate){
 	    $config = new Config($this->getDataFolder()."languages/".$this->getLanguage()."/"."gameplay.yml");
 	    return $config->get($totranslate);
@@ -72,12 +81,9 @@ class FactionsPE extends PluginBase {
     }
 
     public function initPConfig(Player $player) : Config{
-        $pconfig = new Config($this->getDataFolder()."players/".$player->getName().".yml", Config::YAML, [
-            "Faction" => [],
-            "Kills" => 0,
-            "Deaths" => 0
+        return new Config($this->getDataFolder()."players/".$player->getName().".yml", Config::YAML, [
+            "Faction" => ""
         ]);
-        return $pconfig;
     }
 
     public function getPConf(Player $player, string $get){
@@ -86,27 +92,32 @@ class FactionsPE extends PluginBase {
     }
 
     public function createFaction(string $name, Player $player) : Config{
-        $config = new Config($this->getDataFolder()."factions/".$name.".yml", Config::YAML, [
+        return new Config($this->getDataFolder()."factions/".$name.".yml", Config::YAML, [
             "FName" => $name,
             "FLeader" => $player->getName(),
             "FMembers" => array($player->getName())
         ]);
-        return $config;
     }
 
     public function deleteFaction(Player $player){
-	    if ($this->isFactionLeader($player)){
-	        if (unlink($this->getDataFolder()."factions/".$this->getFactionName($player).".yml")){
-	            $player->sendMessage($this->translate("faction-deleted"));
+	    if($this->hasFaction($player)) {
+            if ($this->isFactionLeader($player)) {
+                if (unlink($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml")) {
+                    $player->sendMessage($this->translate("faction-deleted"));
+                    $this->setPFaction($player, "");
+                }
+            } else {
+                $player->sendMessage($this->translate("not-faction-leader"));
             }
         }else{
-	        $player->sendMessage($this->translate("not-faction-leader"));
+	        $player->sendMessage($this->translate("have-not-a-faction"));
         }
     }
 
     public function setPFaction(Player $player, string $name){
 	    $pconfig = new Config($this->getDataFolder()."players/".$player->getName().".yml");
 	    $pconfig->set("Faction", $name);
+	    $pconfig->save();
     }
 
     public function getFaction(Player $player, string $get){
@@ -128,6 +139,14 @@ class FactionsPE extends PluginBase {
 
     public function isInSameFaction(Player $player, Player $other) : bool{
 	    if ($this->getFactionName($player) == $this->getFactionName($other)){
+	        return true;
+        }else{
+	        return false;
+        }
+    }
+
+    public function hasFaction(Player $player) : bool{
+	    if (!empty($this->getFactionName($player))){
 	        return true;
         }else{
 	        return false;
