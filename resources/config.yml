@@ -4,4 +4,7 @@
 # fr - French
 # de - German
 Language: en
+
+#Max lenght of Faction name.
+max-lenght: 8
 ...

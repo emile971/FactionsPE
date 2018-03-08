@@ -22,4 +22,4 @@
   
  # Developer:
  
- * CLADevs Team - Main Developer.
+ * CLADevs Team - FactionsPE Developer.

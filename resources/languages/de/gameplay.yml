@@ -1,3 +1,9 @@
 ---
 command-usage: §6Bitte benutze /f help für eine Liste von Befehlen.
+faction-already-exists: §cEine Faction mit dem Namen existiert bereits.
+not-faction-leader: §eDu bist nicht der Anführer der Faction.
+faction-name-toolong: §cDer Faction name ist zu lang.
+not-a-player: §bDu musst ein Spieler sein um dies zu tun.
+faction-deleted: §4Du hast deine Faction gelöscht.
+cant-attack-fmember: §cDu kannst kein Faction Mitglied attackieren.
 ...
