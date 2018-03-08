@@ -23,6 +23,7 @@ declare(strict_types = 1);
 namespace FactionsPE\Commands;
 
 use FactionsPE\FactionsPE;
+
 use pocketmine\command\{CommandSender, PluginCommand};
 use pocketmine\Player;
 use pocketmine\utils\TextFormat as C;
@@ -44,8 +45,8 @@ class FactionCommand extends PluginCommand {
                     case "create":
                         if (!$this->plugin->hasFaction($sender)) {
                             if (!empty($args[1])) {
-                                if (strlen($args[1]) < $this->plugin->getConf("max-lenght")) {
-                                    if (!file_exists($this->plugin->getDataFolder() . "factions/" . $args[1] . ".yml")) {
+                                if (strlen($args[1]) < $this->plugin->getConf("max-length")) {
+                                    if (!$this->plugin->FactionExist($args[1])) {
                                         $this->plugin->createFaction($args[1], $sender);
                                         $this->plugin->setPFaction($sender, $args[1]);
                                         $sender->sendMessage($this->plugin->translate("faction-created"));
@@ -66,6 +67,22 @@ class FactionCommand extends PluginCommand {
                         break;
                     case "invite":
                         break;
+                    case "kick":
+                        if ($this->plugin->hasFaction($sender)){
+                            if ($this->plugin->isFactionLeader($sender)){
+                                //TODO Do this.
+                            }
+                        }
+                        break;
+                    case "info":
+                        if ($this->plugin->hasFaction($sender)) {
+                            if (empty($args[1])) {
+                                $this->plugin->getFactionInfo($sender);
+                            } else {
+                                $this->plugin->getOtherFactionInfo($sender, $args[1]);
+                            }
+                        }
+                        break;
                     case "help":
                     case "h":
                         $this->sendHelpList($sender);
@@ -82,7 +99,8 @@ class FactionCommand extends PluginCommand {
 	private function sendHelpList(Player $player) : void{
 	    $player->sendMessage(C::YELLOW."=| ".C::DARK_PURPLE."Factions".C::GREEN." Help".C::YELLOW." |=");
         $player->sendMessage(C::GRAY."- /f help (Shows this list)");
-        $player->sendMessage(C::GRAY."- /f create {name} (Create a Faction)");
+        $player->sendMessage(C::GRAY."- /f create {fname} (Create a Faction)");
         $player->sendMessage(C::GRAY."- /f delete (Deletes the faction)");
+        $player->sendMessage(C::GRAY."- /f info [fname] (Get Faction Informations)");
     }
 }

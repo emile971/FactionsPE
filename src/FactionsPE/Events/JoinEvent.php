@@ -3,6 +3,7 @@
 namespace FactionsPE\Events;
 
 use FactionsPE\FactionsPE;
+
 use pocketmine\event\player\PlayerJoinEvent;
 
 class JoinEvent extends EventListener {

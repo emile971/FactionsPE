@@ -9,4 +9,5 @@ faction-deleted: §4You deleted our Faction.
 cant-attack-fmember: §cYou can't attack a faction member.
 has-already-a-faction: §cYou have already a faction.
 have-not-a-faction: §cYou haven't a faction.
+faction-not-exist: §cFaction doesn't exist.
 ...

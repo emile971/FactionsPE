@@ -8,5 +8,6 @@ faction-created: §aDu hast eine Faction erstellt.
 faction-deleted: §4Du hast deine Faction gelöscht.
 cant-attack-fmember: §cDu kannst kein Faction Mitglied attackieren.
 has-already-a-faction: §cDu hast bereits eine Faction.
-have-not-a-faction: §cDu hast keine Faction
+have-not-a-faction: §cDu hast keine Faction.
+faction-not-exist: §cFaction existiert nicht.
 ...

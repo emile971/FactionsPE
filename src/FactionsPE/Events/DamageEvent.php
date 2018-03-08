@@ -3,6 +3,7 @@
 namespace FactionsPE\Events;
 
 use FactionsPE\FactionsPE;
+
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\Player;

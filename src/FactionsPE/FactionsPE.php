@@ -22,13 +22,15 @@ declare(strict_types = 1);
 
 namespace FactionsPE;
 
+use FactionsPE\Commands\FactionCommand;
+use FactionsPE\Events\DamageEvent;
+use FactionsPE\Events\JoinEvent;
+
 use pocketmine\command\overload\CommandEnum;
 use pocketmine\command\overload\CommandParameter;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\{Config, TextFormat as C};
-
-use FactionsPE\Commands\FactionCommand;
 
 class FactionsPE extends PluginBase {
 
@@ -36,6 +38,7 @@ class FactionsPE extends PluginBase {
 		$this->registerCommands();
 		$this->registerCommandParameters();
 		$this->initConfig();
+		$this->registerEvents();
 		$this->getLogger()->info(C::GREEN . "Enabled.");
 	}
 
@@ -52,14 +55,20 @@ class FactionsPE extends PluginBase {
         return $config->get($get);
     }
 
-	public function registerCommands() : void{
+	private function registerCommands() : void{
 		$this->getServer()->getCommandMap()->register("Factions", new FactionCommand("f", $this));
 	}
 
 	private function registerCommandParameters() : void{
 	    if($this->getServer()->getName() == "Altay"){
-	        $this->getServer()->getCommandMap()->getCommand("f")->getOverload("default")->setParameter(0, new CommandParameter("args", CommandParameter::ARG_TYPE_STRING, false, CommandParameter::ARG_FLAG_ENUM, new CommandEnum("args", ["help", "create", "delete"])));
+	        $this->getServer()->getCommandMap()->getCommand("f")->getOverload("default")->setParameter(0, new CommandParameter("args", CommandParameter::ARG_TYPE_STRING, false, CommandParameter::ARG_FLAG_ENUM, new CommandEnum("args", ["help", "create", "delete", "invite", "kick", "info"])));
         }
+    }
+
+    private function registerEvents() : void{
+	    $plmngr = $this->getServer()->getPluginManager();
+	    $plmngr->registerEvents(new JoinEvent($this), $this);
+	    $plmngr->registerEvents(new DamageEvent($this), $this);
     }
 
 	public function translate(string $totranslate){
@@ -125,6 +134,11 @@ class FactionsPE extends PluginBase {
         return $faction->get($get);
     }
 
+    public function getOtherFaction(string $fname, string $get){
+	    $config = new Config($this->getDataFolder()."factions/".$fname.".yml");
+	    return $config->get($get);
+    }
+
     public function getFactionName(Player $player) : string{
 	    return (string) $this->getPConf($player, "Faction");
     }
@@ -137,8 +151,8 @@ class FactionsPE extends PluginBase {
         }
     }
 
-    public function isInSameFaction(Player $player, Player $other) : bool{
-	    if ($this->getFactionName($player) == $this->getFactionName($other)){
+    public function isInSameFaction(Player $p1, Player $p2) : bool{
+	    if ($this->getFactionName($p1) == $this->getFactionName($p2)){
 	        return true;
         }else{
 	        return false;
@@ -153,7 +167,37 @@ class FactionsPE extends PluginBase {
         }
     }
 
-    public function onDisable(){
+    public function getFactionInfo(Player $player) : void {
+        if ($this->hasFaction($player)) {
+            $player->sendMessage(C::DARK_GRAY."> ".C::YELLOW . "Faction Info".C::DARK_GRAY." <");
+            $player->sendMessage(C::GOLD . "Name: " . C::GRAY . $this->getFaction($player, "FName"));
+            $player->sendMessage(C::GOLD . "Leader: " . C::GRAY . $this->getFaction($player, "FLeader"));
+            //TODO $player->sendMessage(C::BLUE . "Members: " . C::GRAY . $this->getFaction($player, "FMembers"));
+        } else {
+            $player->sendMessage($this->translate("have-not-a-faction"));
+        }
+    }
+
+    public function getOtherFactionInfo(Player $player, string $fname) : void {
+        if ($this->FactionExist($fname)) {
+            $player->sendMessage(C::DARK_GRAY."> ".C::YELLOW . "Faction Info".C::DARK_GRAY." <");
+            $player->sendMessage(C::GOLD . "Name: " . C::GRAY . $this->getOtherFaction($fname, "FName"));
+            $player->sendMessage(C::GOLD . "Leader: " . C::GRAY . $this->getOtherFaction($fname, "FLeader"));
+            //TODO $player->sendMessage(C::BLUE . "Members: " . C::GRAY . $this->getOtherFaction($fname, "FMembers"));
+        } else {
+            $player->sendMessage($this->translate("faction-not-exist"));
+        }
+    }
+
+    public function FactionExist(string $fname) : bool {
+        if (file_exists($this->getDataFolder() . "factions/" . $fname . ".yml")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function onDisable() {
         $this->getLogger()->info(C::RED . "Disabled.");
     }
 }

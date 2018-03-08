@@ -6,5 +6,5 @@
 Language: en
 
 #Max lenght of Faction name.
-max-lenght: 8
+max-length: 8
 ...
