@@ -37,6 +37,7 @@ class FactionsPE extends PluginBase {
 	public function onEnable(){
 		$this->registerCommands();
 		$this->registerCommandParameters();
+        $this->getCommand("f")->setDescription("Faction Command");
 		$this->initConfig();
 		$this->registerEvents();
 		$this->getLogger()->info(C::GREEN . "Enabled.");
@@ -47,7 +48,7 @@ class FactionsPE extends PluginBase {
         @mkdir($this->getDataFolder()."factions/");
         @mkdir($this->getDataFolder()."players/");
         $this->saveResource("config.yml");
-        $this->saveResource("languages/".$this->getLanguage()."/gameplay.yml");
+        $this->saveResource("languages/".$this->getLanguage().DIRECTORY_SEPARATOR."gameplay.yml");
     }
 
     public function getConf(string $get){
@@ -72,7 +73,7 @@ class FactionsPE extends PluginBase {
     }
 
 	public function translate(string $totranslate){
-	    $config = new Config($this->getDataFolder()."languages/".$this->getLanguage()."/"."gameplay.yml");
+	    $config = new Config($this->getDataFolder()."languages/".$this->getLanguage().DIRECTORY_SEPARATOR."gameplay.yml");
 	    return $config->get($totranslate);
     }
 
@@ -108,7 +109,7 @@ class FactionsPE extends PluginBase {
         ]);
     }
 
-    public function deleteFaction(Player $player){
+    public function deleteFaction(Player $player) : void{
 	    if($this->hasFaction($player)) {
             if ($this->isFactionLeader($player)) {
                 if (unlink($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml")) {
@@ -123,7 +124,7 @@ class FactionsPE extends PluginBase {
         }
     }
 
-    public function setPFaction(Player $player, string $name){
+    public function setPFaction(Player $player, string $name) : void{
 	    $pconfig = new Config($this->getDataFolder()."players/".$player->getName().".yml");
 	    $pconfig->set("Faction", $name);
 	    $pconfig->save();
@@ -132,6 +133,12 @@ class FactionsPE extends PluginBase {
     public function getFaction(Player $player, string $get){
         $faction = new Config($this->getDataFolder()."factions/".$this->getFactionName($player).".yml");
         return $faction->get($get);
+    }
+
+    public function setFaction(Player $player, $get, $set){
+        $faction = new Config($this->getDataFolder()."factions/".$this->getFactionName($player).".yml");
+        $faction->set($get, $set);
+        $faction->save();
     }
 
     public function getOtherFaction(string $fname, string $get){
@@ -152,8 +159,12 @@ class FactionsPE extends PluginBase {
     }
 
     public function isInSameFaction(Player $p1, Player $p2) : bool{
-	    if ($this->getFactionName($p1) == $this->getFactionName($p2)){
-	        return true;
+	    if ($this->getFactionName($p1) != "" and $this->getFactionName($p2) != "") {
+            if ($this->getFactionName($p1) == $this->getFactionName($p2)) {
+                return true;
+            } else {
+                return false;
+            }
         }else{
 	        return false;
         }
@@ -194,6 +205,19 @@ class FactionsPE extends PluginBase {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function kickOutofFaction(Player $player, Player $who) : void{
+        $this->setPFaction($who, "");
+        //TODO Kick from member list $this->setFaction($player, "FMembers", "");
+    }
+
+    public function PlayerExist(string $name) : bool{
+	    if (file_exists($this->getDataFolder()."players/".$name.".yml")){
+	        return true;
+        }else{
+	        return false;
         }
     }
 

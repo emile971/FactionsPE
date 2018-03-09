@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * CLAAPI, a public api with many features for PocketMine-MP
+ * Copyright (C) 2017-2018 CLADevs
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 namespace FactionsPE\Events;
 
 use FactionsPE\FactionsPE;
@@ -23,9 +41,11 @@ class DamageEvent extends EventListener {
         if ($lastdmg instanceof EntityDamageByEntityEvent){
             $damager = $lastdmg->getDamager();
             if ($entity instanceof Player and $damager instanceof Player){
-                if ($this->plugin->isInSameFaction($damager, $entity)){
-                    $event->setCancelled(true);
-                    $damager->sendMessage($this->plugin->translate("cant-attack-fmember"));
+                if ($this->plugin->getConf("friendly-attack") != true){
+                    if ($this->plugin->isInSameFaction($damager, $entity)){
+                        $event->setCancelled(true);
+                        $damager->sendMessage($this->plugin->translate("cant-attack-fmember"));
+                    }
                 }
             }
         }

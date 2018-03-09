@@ -2,7 +2,7 @@
 command-usage: §6Please use /f help for a list of commands.
 faction-already-exists: §cA Faction with that name already exists.
 not-faction-leader: §eYou'r not the leader of the faction.
-faction-name-toolong: §cThe Faction is to long.
+faction-name-tolong: §cThe Faction is to long or to short.
 not-a-player: §bYou need to be a player to do this.
 faction-created: §aYou created an faction.
 faction-deleted: §4You deleted our Faction.
@@ -10,4 +10,7 @@ cant-attack-fmember: §cYou can't attack a faction member.
 has-already-a-faction: §cYou have already a faction.
 have-not-a-faction: §cYou haven't a faction.
 faction-not-exist: §cFaction doesn't exist.
+cant-kick-leader: §eYou can't kick the leader of the faction.
+kicked-name-from-faction: §aYou kicked {who} from our faction.
+player-not-exist: §cThat player doesn't exist.
 ...

@@ -34,7 +34,6 @@ class FactionCommand extends PluginCommand {
 
 	public function __construct($name, FactionsPE $plugin){
 	    $this->plugin = $plugin;
-        $this->setDescription("Shows faction commands.");
         parent::__construct($name, $plugin);
 	}
 
@@ -45,7 +44,7 @@ class FactionCommand extends PluginCommand {
                     case "create":
                         if (!$this->plugin->hasFaction($sender)) {
                             if (!empty($args[1])) {
-                                if (strlen($args[1]) < $this->plugin->getConf("max-length")) {
+                                if (strlen($args[1]) < $this->plugin->getConf("max-length") and strlen($args[1]) > $this->plugin->getConf("min-length")) {
                                     if (!$this->plugin->FactionExist($args[1])) {
                                         $this->plugin->createFaction($args[1], $sender);
                                         $this->plugin->setPFaction($sender, $args[1]);
@@ -54,10 +53,11 @@ class FactionCommand extends PluginCommand {
                                         $sender->sendMessage($this->plugin->translate("faction-already-exists"));
                                     }
                                 } else {
-                                    $sender->sendMessage($this->plugin->translate("faction-name-toolong"));
+                                    $sender->sendMessage($this->plugin->translate("faction-name-tolongorshort"));
+                                    //TODO SEND MAX AND MIN.
                                 }
                             }
-                        }else{
+                        } else {
                             $sender->sendMessage($this->plugin->translate("has-already-a-faction"));
                         }
                         break;
@@ -68,19 +68,33 @@ class FactionCommand extends PluginCommand {
                     case "invite":
                         break;
                     case "kick":
-                        if ($this->plugin->hasFaction($sender)){
-                            if ($this->plugin->isFactionLeader($sender)){
-                                //TODO Do this.
+                        if (!empty($args[1])) {
+                            if ($this->plugin->hasFaction($sender)) {
+                                if ($this->plugin->isFactionLeader($sender)) {
+                                    if ($this->plugin->PlayerExist($args[1])){
+                                        $who = $this->plugin->getServer()->getPlayer($args[1]);
+                                        if ($this->plugin->getFaction($sender, "FLeader") != $who->getName()) {
+                                            $kicked = $this->plugin->translate("kicked-name-from-faction");
+                                            $kickmsg = str_replace("{who}", $who->getName(), $kicked);
+                                            $this->plugin->kickOutofFaction($sender, $who);
+                                            $sender->sendMessage($kickmsg); //TODO Returns "" idk why. -.-
+                                        } else {
+                                            $sender->sendMessage($this->plugin->translate("cant-kick-leader"));
+                                        }
+                                    } else {
+                                        $sender->sendMessage($this->plugin->translate("player-not-exist"));
+                                    }
+                                } else {
+                                    $sender->sendMessage($this->plugin->translate("not-faction-leader"));
+                                }
                             }
                         }
                         break;
                     case "info":
-                        if ($this->plugin->hasFaction($sender)) {
-                            if (empty($args[1])) {
+                        if (empty($args[1])) {
                                 $this->plugin->getFactionInfo($sender);
-                            } else {
-                                $this->plugin->getOtherFactionInfo($sender, $args[1]);
-                            }
+                        } else {
+                            $this->plugin->getOtherFactionInfo($sender, $args[1]);
                         }
                         break;
                     case "help":
@@ -100,7 +114,8 @@ class FactionCommand extends PluginCommand {
 	    $player->sendMessage(C::YELLOW."=| ".C::DARK_PURPLE."Factions".C::GREEN." Help".C::YELLOW." |=");
         $player->sendMessage(C::GRAY."- /f help (Shows this list)");
         $player->sendMessage(C::GRAY."- /f create {fname} (Create a Faction)");
-        $player->sendMessage(C::GRAY."- /f delete (Deletes the faction)");
+        $player->sendMessage(C::GRAY."- /f delete (Delete our faction)");
         $player->sendMessage(C::GRAY."- /f info [fname] (Get Faction Informations)");
+        $player->sendMessage(C::GRAY."- /f kick {player} (Kick anyone from our Faction)");
     }
 }
