@@ -38,5 +38,6 @@ class JoinEvent extends EventListener {
         if (!file_exists($this->plugin->getDataFolder()."players/".$player->getName().".yml")){
             $this->plugin->initPConfig($player);
         }
+        $this->plugin->setPFacNameTag($player);
     }
 }

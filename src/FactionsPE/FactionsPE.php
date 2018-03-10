@@ -221,6 +221,12 @@ class FactionsPE extends PluginBase {
         }
     }
 
+    public function setPFacNameTag(Player $player){
+	    if ($this->getConf("faction-nametag")) {
+            $player->setNameTag(C::DARK_PURPLE . $this->getFactionName($player) . C::GRAY . " : " . C::WHITE . $player->getName());
+        }
+    }
+
     public function onDisable() {
         $this->getLogger()->info(C::RED . "Disabled.");
     }

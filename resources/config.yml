@@ -5,10 +5,13 @@
 # de - German
 Language: en
 
-#Max and Min lenght of Faction name.
+#Max. and Min. lenght of Faction name.
 max-length: 8
 min-length: 3
 
 #Allow faction members can attack other members.
 friendy-attack: false
+
+#Set Faction NameTag.
+faction-nametag: false
 ...

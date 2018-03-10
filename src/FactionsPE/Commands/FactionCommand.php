@@ -49,6 +49,7 @@ class FactionCommand extends PluginCommand {
                                         $this->plugin->createFaction($args[1], $sender);
                                         $this->plugin->setPFaction($sender, $args[1]);
                                         $sender->sendMessage($this->plugin->translate("faction-created"));
+                                        $this->plugin->setPFacNameTag($sender);
                                     } else {
                                         $sender->sendMessage($this->plugin->translate("faction-already-exists"));
                                     }
