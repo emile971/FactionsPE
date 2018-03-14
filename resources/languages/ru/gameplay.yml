@@ -1,0 +1,16 @@
+---
+command-usage: §6Пожалуйста используйте /f help для помощи по командам.
+faction-already-exists: §cКлан с таким именем уже существует.
+not-faction-leader: §eВы не глава клана.
+faction-name-tolong: §cКлан должен иметь не длиное и не короткое название.
+not-a-player: §bВы должны быть игроком для этого.
+faction-created: §aВы создали клан.
+faction-deleted: §4Вы удалили клан.
+cant-attack-fmember: §cВы не можете атаковать своего товарища.
+has-already-a-faction: §cУ вас уже есть клан.
+have-not-a-faction: §cУ вас нет клана.
+faction-not-exist: §cКлан не найден.
+cant-kick-leader: §eУ вас нет прав что бы выгнать Главу клана.
+kicked-name-from-faction: §aВы выгнали {who} из клана.
+player-not-exist: §cИгрок не найден.
+...
