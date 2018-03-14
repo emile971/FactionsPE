@@ -1,5 +1,4 @@
 <?php
-
 /*
  * CLAAPI, a public api with many features for PocketMine-MP
  * Copyright (C) 2017-2018 CLADevs
@@ -17,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+declare(strict_types=1);
 
 namespace FactionsPE\Events;
 
 use FactionsPE\FactionsPE;
-
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\Player;
 
-class DamageEvent extends EventListener {
+class DamageEvent extends EventListener{
 
     private $plugin;
 
-    public function __construct(FactionsPE $plugin) {
+    public function __construct(FactionsPE $plugin){
         $this->plugin = $plugin;
         parent::__construct($plugin);
     }
@@ -38,11 +37,11 @@ class DamageEvent extends EventListener {
     public function onDamage(EntityDamageEvent $event){
         $entity = $event->getEntity();
         $lastdmg = $entity->getLastDamageCause();
-        if ($lastdmg instanceof EntityDamageByEntityEvent){
+        if($lastdmg instanceof EntityDamageByEntityEvent){
             $damager = $lastdmg->getDamager();
-            if ($entity instanceof Player and $damager instanceof Player){
-                if ($this->plugin->getConf("friendly-attack") != true){
-                    if ($this->plugin->isInSameFaction($damager, $entity)){
+            if($entity instanceof Player and $damager instanceof Player){
+                if($this->plugin->getConf("friendly-attack") != true){
+                    if($this->plugin->isInSameFaction($damager, $entity)){
                         $event->setCancelled(true);
                         $damager->sendMessage($this->plugin->translate("cant-attack-fmember"));
                     }
