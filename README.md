@@ -8,6 +8,7 @@
   - [x] English
   - [x] French
   - [x] German
+  - [x] Russian
 
 * Please tell us in issue what for feature we should add.
 
