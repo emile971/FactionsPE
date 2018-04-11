@@ -1,14 +1,14 @@
 ---
-#Languages Available:
+#Available Languages:
 # en - English
 # ru - Russian
 # fr - French
 # de - German
 Language: en
 
-#Max. and Min. lenght of Faction name.
-max-length: 8
+#Min. and Max. lenght of Faction name.
 min-length: 3
+max-length: 8
 
 #Allow faction members can attack other members.
 friendly-attack: false

@@ -10,12 +10,13 @@
   - [x] German
   - [x] Russian
 
-* Please tell us in issue what for feature we should add.
+* Please tell us in issue which features we should add.
 
 ## Features:
 
-- [x] Faction can be Created
-- [x] Faction can be Deleted
+- [x] Create Faction.
+- [x] Delete Faction.
+- [x] Faction NameTag
 - [x] MultiLang
 
  ## Need Help?

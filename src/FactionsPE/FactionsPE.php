@@ -1,6 +1,7 @@
 <?php
+
 /*
- * CLAAPI, a public api with many features for PocketMine-MP
+ * FactionsPE, a public Factions plugin with many features for PocketMine-MP
  * Copyright (C) 2017-2018 CLADevs
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 declare(strict_types=1);
 
 namespace FactionsPE;
@@ -234,7 +236,11 @@ class FactionsPE extends PluginBase{
 
     public function setPFacNameTag(Player $player) : void{
         if($this->getConf("faction-nametag")){
-            $player->setNameTag(C::DARK_PURPLE . $this->getFactionName($player) . C::GRAY . " : " . C::WHITE . $player->getName());
+            if (!empty($this->getPConf($player, "Faction"))){
+                $player->setNameTag(C::DARK_PURPLE . $this->getFactionName($player) . C::GRAY . " : " . C::WHITE . $player->getName());
+            }else{
+                $player->setNameTag(C::WHITE . $player->getName());
+            }
         }
     }
 
