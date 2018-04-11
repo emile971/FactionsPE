@@ -80,6 +80,8 @@ class FactionsPE extends PluginBase{
         switch($this->getConf("Language")){
             case "en":
                 return "en";
+	    case "ru":
+	        return "ru";
             case "de":
                 return "de";
             case "fr":
