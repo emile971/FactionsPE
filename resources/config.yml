@@ -11,7 +11,7 @@ max-length: 8
 min-length: 3
 
 #Allow faction members can attack other members.
-friendy-attack: false
+friendly-attack: false
 
 #Set Faction NameTag.
 faction-nametag: false

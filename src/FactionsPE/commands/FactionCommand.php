@@ -81,7 +81,7 @@ class FactionCommand extends PluginCommand{
                                         $kicked = $this->plugin->translate("kicked-name-from-faction");
                                         $kickmsg = str_replace("{who}", $who->getName(), $kicked);
                                         $this->plugin->kickOutofFaction($sender, $who);
-                                        $sender->sendMessage($kickmsg); //TODO Returns "" idk why. -.-
+                                        $sender->sendMessage($kickmsg);
                                     }else{
                                         $sender->sendMessage($this->plugin->translate("cant-kick-leader"));
                                         return false;
