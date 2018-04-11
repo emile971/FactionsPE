@@ -18,25 +18,24 @@
 */
 declare(strict_types=1);
 
-namespace FactionsPE\Events;
+namespace FactionsPE\events;
 
 use FactionsPE\FactionsPE;
+use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 
-class JoinEvent extends EventListener{
+class JoinEventListener implements Listener{
 
+    /** @var FactionsPE */
     private $plugin;
 
     public function __construct(FactionsPE $plugin){
         $this->plugin = $plugin;
-        parent::__construct($plugin);
     }
 
-    public function onJoin(PlayerJoinEvent $event){
+    public function onJoin(PlayerJoinEvent $event) : void{
         $player = $event->getPlayer();
-        if(!file_exists($this->plugin->getDataFolder() . "players/" . $player->getName() . ".yml")){
-            $this->plugin->initPConfig($player);
-        }
+        if(!file_exists($this->plugin->getDataFolder() . "players/" . $player->getName() . ".yml")) $this->plugin->initPConfig($player);
         $this->plugin->setPFacNameTag($player);
     }
 }

@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace FactionsPE;
 
-use FactionsPE\Commands\FactionCommand;
-use FactionsPE\Events\DamageEvent;
-use FactionsPE\Events\JoinEvent;
+use FactionsPE\commands\FactionCommand;
+use FactionsPE\events\DamageEventListener;
+use FactionsPE\events\JoinEventListener;
 use pocketmine\command\overload\CommandEnum;
 use pocketmine\command\overload\CommandParameter;
 use pocketmine\Player;
@@ -39,7 +39,7 @@ class FactionsPE extends PluginBase{
         $this->getCommand("f")->setDescription("Faction Command");
         $this->initConfig();
         $this->registerEvents();
-        $this->getLogger()->info(C::GREEN . "Enabled.");
+        $this->getLogger()->info(C::GREEN . "Enabled");
     }
 
     private function initConfig() : void{
@@ -67,8 +67,8 @@ class FactionsPE extends PluginBase{
 
     private function registerEvents() : void{
         $plmngr = $this->getServer()->getPluginManager();
-        $plmngr->registerEvents(new JoinEvent($this), $this);
-        $plmngr->registerEvents(new DamageEvent($this), $this);
+        $plmngr->registerEvents(new JoinEventListener($this), $this);
+        $plmngr->registerEvents(new DamageEventListener($this), $this);
     }
 
     public function translate(string $totranslate){
@@ -85,7 +85,7 @@ class FactionsPE extends PluginBase{
             case "fr":
                 return "fr";
             default:
-                return "en"; //FallBack language
+                return "en";
         }
     }
 
@@ -108,7 +108,7 @@ class FactionsPE extends PluginBase{
         ]);
     }
 
-    public function deleteFaction(Player $player) : void{
+    public function deleteFaction(Player $player) : bool{
         if($this->hasFaction($player)){
             if($this->isFactionLeader($player)){
                 if(unlink($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml")){
@@ -117,10 +117,13 @@ class FactionsPE extends PluginBase{
                 }
             }else{
                 $player->sendMessage($this->translate("not-faction-leader"));
+                return false;
             }
         }else{
             $player->sendMessage($this->translate("have-not-a-faction"));
+            return false;
         }
+        return true;
     }
 
     public function setPFaction(Player $player, string $name) : void{
@@ -177,7 +180,7 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    public function getFactionInfo(Player $player) : void{
+    public function getFactionInfo(Player $player) : bool{
         if($this->hasFaction($player)){
             $player->sendMessage(C::DARK_GRAY . "> " . C::YELLOW . "Faction Info" . C::DARK_GRAY . " <");
             $player->sendMessage(C::GOLD . "Name: " . C::GRAY . $this->getFaction($player, "FName"));
@@ -185,10 +188,12 @@ class FactionsPE extends PluginBase{
             //TODO $player->sendMessage(C::BLUE . "Members: " . C::GRAY . $this->getFaction($player, "FMembers"));
         }else{
             $player->sendMessage($this->translate("have-not-a-faction"));
+            return false;
         }
+        return true;
     }
 
-    public function getOtherFactionInfo(Player $player, string $fname) : void{
+    public function getOtherFactionInfo(Player $player, string $fname) : bool{
         if($this->factionExist($fname)){
             $player->sendMessage(C::DARK_GRAY . "> " . C::YELLOW . "Faction Info" . C::DARK_GRAY . " <");
             $player->sendMessage(C::GOLD . "Name: " . C::GRAY . $this->getOtherFaction($fname, "FName"));
@@ -196,7 +201,9 @@ class FactionsPE extends PluginBase{
             //TODO $player->sendMessage(C::BLUE . "Members: " . C::GRAY . $this->getOtherFaction($fname, "FMembers"));
         }else{
             $player->sendMessage($this->translate("faction-not-exist"));
+            return false;
         }
+        return true;
     }
 
     public function factionExist(string $fname) : bool{
@@ -220,13 +227,13 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    public function setPFacNameTag(Player $player){
+    public function setPFacNameTag(Player $player) : void{
         if($this->getConf("faction-nametag")){
             $player->setNameTag(C::DARK_PURPLE . $this->getFactionName($player) . C::GRAY . " : " . C::WHITE . $player->getName());
         }
     }
 
     public function onDisable() : void{
-        $this->getLogger()->info(C::RED . "Disabled.");
+        $this->getLogger()->info(C::RED . "Disabled");
     }
 }

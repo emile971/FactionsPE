@@ -18,23 +18,24 @@
 */
 declare(strict_types=1);
 
-namespace FactionsPE\Events;
+namespace FactionsPE\events;
 
 use FactionsPE\FactionsPE;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\Listener;
 use pocketmine\Player;
 
-class DamageEvent extends EventListener{
+class DamageEventListener implements Listener{
 
+    /** @var FactionsPE */
     private $plugin;
 
     public function __construct(FactionsPE $plugin){
         $this->plugin = $plugin;
-        parent::__construct($plugin);
     }
 
-    public function onDamage(EntityDamageEvent $event){
+    public function onDamage(EntityDamageEvent $event) : void{
         $entity = $event->getEntity();
         $lastdmg = $entity->getLastDamageCause();
         if($lastdmg instanceof EntityDamageByEntityEvent){
