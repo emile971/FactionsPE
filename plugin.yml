@@ -1,5 +1,5 @@
 name: FactionsPE
-version: 1.0.1
+version: 1.0.2
 api: [3.0.0-ALPHA10, 3.0.0-ALPHA11]
 main: FactionsPE\FactionsPE
 author: CLADevs Team

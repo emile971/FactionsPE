@@ -1,10 +1,1 @@
-# PHPStorm Useless Files
-
-.idea
-.iml
-.xml
-.xml___jb_tmp___
-.yml___jb_tmp___
-.php___jb_tmp___
-.php___jb_old___
-*.php___jb_tmp___
+.idea/

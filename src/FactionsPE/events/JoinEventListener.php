@@ -28,16 +28,9 @@ use pocketmine\event\player\PlayerJoinEvent;
 
 class JoinEventListener implements Listener{
 
-    /** @var FactionsPE */
-    private $plugin;
-
-    public function __construct(FactionsPE $plugin){
-        $this->plugin = $plugin;
-    }
-
     public function onJoin(PlayerJoinEvent $event) : void{
         $player = $event->getPlayer();
-        if(!file_exists($this->plugin->getDataFolder() . "players/" . $player->getName() . ".yml")) $this->plugin->initPConfig($player);
-        $this->plugin->setPFacNameTag($player);
+        if(!file_exists(FactionsPE::getInstance()->getDataFolder() . "players/" . $player->getName() . ".yml")) FactionsPE::getInstance()->initPConfig($player);
+        FactionsPE::getInstance()->setPFacNameTag($player);
     }
 }

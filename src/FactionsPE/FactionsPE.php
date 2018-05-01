@@ -29,17 +29,20 @@ use pocketmine\command\overload\CommandEnum;
 use pocketmine\command\overload\CommandParameter;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\{
-    Config, TextFormat as C
-};
+use pocketmine\utils\Config;
+use pocketmine\utils\TextFormat;
 
 class FactionsPE extends PluginBase{
 
+    public const VERSION = "v1.0.2";
+    private static $instance;
+
     public function onEnable() : void{
+        self::$instance = $this;
         $this->registerCommands();
         $this->initConfig();
         $this->registerEvents();
-        $this->getLogger()->info(C::GREEN . "Enabled");
+        $this->getLogger()->info(TextFormat::GREEN . "FactionsPE " . self::VERSION . " Enabled");
     }
 
     private function initConfig() : void{
@@ -50,6 +53,10 @@ class FactionsPE extends PluginBase{
         $this->saveResource("languages/" . $this->getLanguage() . DIRECTORY_SEPARATOR . "gameplay.yml");
     }
 
+    /**
+     * @param string $get
+     * @return bool|mixed
+     */
     public function getConf(string $get){
         $config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
         return $config->get($get);
@@ -70,12 +77,16 @@ class FactionsPE extends PluginBase{
         $plmngr->registerEvents(new DamageEventListener($this), $this);
     }
 
+    /**
+     * @param string $totranslate
+     * @return bool|mixed
+     */
     public function translate(string $totranslate){
         $config = new Config($this->getDataFolder() . "languages/" . $this->getLanguage() . DIRECTORY_SEPARATOR . "gameplay.yml");
         return $config->get($totranslate);
     }
 
-    public function getLanguage() : string{
+    private function getLanguage() : string{
         switch($this->getConf("Language")){
             case "en":
                 return "en";
@@ -96,7 +107,12 @@ class FactionsPE extends PluginBase{
         ]);
     }
 
-    public function getPConf(Player $player, string $get){
+    /**
+     * @param Player $player
+     * @param string $get
+     * @return bool|mixed
+     */
+    private function getPConf(Player $player, string $get){
         $pconfig = new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml");
         return $pconfig->get($get);
     }
@@ -133,17 +149,27 @@ class FactionsPE extends PluginBase{
         $pconfig->save();
     }
 
+    /**
+     * @param Player $player
+     * @param string $get
+     * @return bool|mixed
+     */
     public function getFaction(Player $player, string $get){
         $faction = new Config($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml");
         return $faction->get($get);
     }
 
-    public function setFaction(Player $player, $get, $set){
+    public function setFaction(Player $player, $get, $set) : void{
         $faction = new Config($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml");
         $faction->set($get, $set);
         $faction->save();
     }
 
+    /**
+     * @param string $fname
+     * @param string $get
+     * @return bool|mixed
+     */
     public function getOtherFaction(string $fname, string $get){
         $config = new Config($this->getDataFolder() . "factions/" . $fname . ".yml");
         return $config->get($get);
@@ -183,12 +209,12 @@ class FactionsPE extends PluginBase{
 
     public function getFactionInfo(Player $player) : bool{
         if($this->hasFaction($player)){
-            $player->sendMessage(C::DARK_GRAY . "> " . C::YELLOW . "Faction Info" . C::DARK_GRAY . " <");
-            $player->sendMessage(C::BLUE . "Name: " . C::GRAY . $this->getFaction($player, "FName"));
-            $player->sendMessage(C::BLUE . "Leader: " . C::GRAY . $this->getFaction($player, "FLeader"));
-            $player->sendMessage(C::BLUE . "Members:");
-            foreach ($this->getFaction($player, "FMembers") as $members){
-                $player->sendMessage(C::ITALIC.C::GRAY."- ".C::YELLOW.$members);
+            $player->sendMessage(TextFormat::DARK_GRAY . "> " . TextFormat::YELLOW . "Faction Info" . TextFormat::DARK_GRAY . " <");
+            $player->sendMessage(TextFormat::BLUE . "Name: " . TextFormat::GRAY . $this->getFaction($player, "FName"));
+            $player->sendMessage(TextFormat::BLUE . "Leader: " . TextFormat::GRAY . $this->getFaction($player, "FLeader"));
+            $player->sendMessage(TextFormat::BLUE . "Members:");
+            foreach($this->getFaction($player, "FMembers") as $members){
+                $player->sendMessage(TextFormat::ITALIC . TextFormat::GRAY . "- " . TextFormat::YELLOW . $members);
             }
         }else{
             $player->sendMessage($this->translate("have-not-a-faction"));
@@ -199,12 +225,12 @@ class FactionsPE extends PluginBase{
 
     public function getOtherFactionInfo(Player $player, string $fname) : bool{
         if($this->factionExist($fname)){
-            $player->sendMessage(C::DARK_GRAY . "> " . C::YELLOW . "Faction Info" . C::DARK_GRAY . " <");
-            $player->sendMessage(C::BLUE . "Name: " . C::GRAY . $this->getOtherFaction($fname, "FName"));
-            $player->sendMessage(C::BLUE . "Leader: " . C::GRAY . $this->getOtherFaction($fname, "FLeader"));
-            $player->sendMessage(C::BLUE . "Members:");
-            foreach ($this->getOtherFaction($fname, "FMembers") as $members){
-                $player->sendMessage(C::ITALIC.C::GRAY."- ".C::YELLOW.$members);
+            $player->sendMessage(TextFormat::DARK_GRAY . "> " . TextFormat::YELLOW . "Faction Info" . TextFormat::DARK_GRAY . " <");
+            $player->sendMessage(TextFormat::BLUE . "Name: " . TextFormat::GRAY . $this->getOtherFaction($fname, "FName"));
+            $player->sendMessage(TextFormat::BLUE . "Leader: " . TextFormat::GRAY . $this->getOtherFaction($fname, "FLeader"));
+            $player->sendMessage(TextFormat::BLUE . "Members:");
+            foreach($this->getOtherFaction($fname, "FMembers") as $members){
+                $player->sendMessage(TextFormat::ITALIC . TextFormat::GRAY . "- " . TextFormat::YELLOW . $members);
             }
         }else{
             $player->sendMessage($this->translate("faction-not-exist"));
@@ -236,15 +262,19 @@ class FactionsPE extends PluginBase{
 
     public function setPFacNameTag(Player $player) : void{
         if($this->getConf("faction-nametag")){
-            if (!empty($this->getPConf($player, "Faction"))){
-                $player->setNameTag(C::DARK_PURPLE . $this->getFactionName($player) . C::GRAY . " : " . C::WHITE . $player->getName());
+            if(!empty($this->getPConf($player, "Faction"))){
+                $player->setNameTag(TextFormat::DARK_PURPLE . $this->getFactionName($player) . TextFormat::GRAY . " : " . TextFormat::WHITE . $player->getName());
             }else{
-                $player->setNameTag(C::WHITE . $player->getName());
+                $player->setNameTag(TextFormat::WHITE . $player->getName());
             }
         }
     }
 
+    public static function getInstance() : self{
+        return self::$instance;
+    }
+
     public function onDisable() : void{
-        $this->getLogger()->info(C::RED . "Disabled");
+        $this->getLogger()->info(TextFormat::RED . "FactionsPE " . self::VERSION . " Disabled");
     }
 }

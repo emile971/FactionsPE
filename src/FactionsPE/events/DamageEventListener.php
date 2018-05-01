@@ -30,23 +30,16 @@ use pocketmine\Player;
 
 class DamageEventListener implements Listener{
 
-    /** @var FactionsPE */
-    private $plugin;
-
-    public function __construct(FactionsPE $plugin){
-        $this->plugin = $plugin;
-    }
-
     public function onDamage(EntityDamageEvent $event) : void{
         $entity = $event->getEntity();
         $lastdmg = $entity->getLastDamageCause();
         if($lastdmg instanceof EntityDamageByEntityEvent){
             $damager = $lastdmg->getDamager();
             if($entity instanceof Player and $damager instanceof Player){
-                if($this->plugin->getConf("friendly-attack") != true){
-                    if($this->plugin->isInSameFaction($damager, $entity)){
+                if(FactionsPE::getInstance()->getConf("friendly-attack") != true){
+                    if(FactionsPE::getInstance()->isInSameFaction($damager, $entity)){
                         $event->setCancelled(true);
-                        $damager->sendMessage($this->plugin->translate("cant-attack-fmember"));
+                        $damager->sendMessage(FactionsPE::getInstance()->translate("cant-attack-fmember"));
                     }
                 }
             }
