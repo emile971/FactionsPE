@@ -8,7 +8,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\Player;
-use pocketmine\utils\TextFormat;
+use pocketmine\utils\TextFormat as C;
 
 class EventListener implements Listener {
 
@@ -19,9 +19,8 @@ class EventListener implements Listener {
     }
 
     public function onChat(PlayerChatEvent $event) : void{
-        if (FactionsPE::getInstance()->getConf("faction-chattag") == true){
-            $event->setFormat(FactionsPE::getInstance()->getFactionName($event->getPlayer()).": ".$event->getPlayer()->getName());
-        }
+        if (FactionsPE::getInstance()->getConf("faction-chattag") == true)
+            $event->setFormat(C::DARK_PURPLE.FactionsPE::getInstance()->getFactionName($event->getPlayer()).C::DARK_GRAY." : ".C::RESET.$event->getPlayer()->getName());
     }
 
     public function onDamage(EntityDamageEvent $event) : void{

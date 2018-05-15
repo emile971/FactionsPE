@@ -35,83 +35,77 @@ class FactionCommand extends PluginCommand{
     }
 
     public function execute(CommandSender $sender, string $alias, array $args) : bool{
-        if(!$sender instanceof Player) return false;
-        if(isset($args[0])){
-            switch($args[0]){
-                case "create":
-                    if(!FactionsPE::getInstance()->hasFaction($sender)){
-                        if(!empty($args[1])){
-                            if(strlen($args[1]) < FactionsPE::getInstance()->getConf("max-length") and strlen($args[1]) > FactionsPE::getInstance()->getConf("min-length")){
-                                if(!FactionsPE::getInstance()->factionExist($args[1])){
-                                    FactionsPE::getInstance()->createFaction($args[1], $sender);
-                                    FactionsPE::getInstance()->setPFaction($sender, $args[1]);
-                                    $sender->sendMessage(FactionsPE::getInstance()->translate("faction-created"));
-                                    FactionsPE::getInstance()->setPFacNameTag($sender);
-                                }else{
-                                    $sender->sendMessage(FactionsPE::getInstance()->translate("faction-already-exists"));
-                                    return false;
-                                }
-                            }else{
-                                $sender->sendMessage(FactionsPE::getInstance()->translate("faction-name-tolongorshort"));
-                                return false;
-                                //TODO SEND MAX AND MIN.
-                            }
-                        }
-                    }else{
-                        $sender->sendMessage(FactionsPE::getInstance()->translate("has-already-a-faction"));
-                        return false;
-                    }
-                    break;
-                case "delete":
-                case "del":
-                    FactionsPE::getInstance()->deleteFaction($sender);
-                    break;
-                case "invite":
-                    break;
-                case "kick":
-                    if(!empty($args[1])){
-                        if(FactionsPE::getInstance()->hasFaction($sender)){
-                            if(FactionsPE::getInstance()->isFactionLeader($sender)){
-                                if(FactionsPE::getInstance()->playerExist($args[1])){
-                                    $who = FactionsPE::getInstance()->getServer()->getPlayer($args[1]);
-                                    if(FactionsPE::getInstance()->getFaction($sender, "FLeader") != $who->getName()){
-                                        $kicked = FactionsPE::getInstance()->translate("kicked-name-from-faction");
-                                        $kickmsg = str_replace("{who}", $who->getName(), $kicked);
-                                        FactionsPE::getInstance()->kickOutofFaction($sender, $who);
-                                        $sender->sendMessage($kickmsg);
-                                    }else{
-                                        $sender->sendMessage(FactionsPE::getInstance()->translate("cant-kick-leader"));
-                                        return false;
+        if($sender instanceof Player) {
+            if (isset($args[0])) {
+                switch ($args[0]) {
+                    case "create":
+                        if (!FactionsPE::getInstance()->hasFaction($sender)) {
+                            if (!empty($args[1])) {
+                                if (strlen($args[1]) < FactionsPE::getInstance()->getConf("max-length") and strlen($args[1]) > FactionsPE::getInstance()->getConf("min-length")) {
+                                    if (!FactionsPE::getInstance()->factionExist($args[1])) {
+                                        FactionsPE::getInstance()->createFaction($args[1], $sender);
+                                        FactionsPE::getInstance()->setPFaction($sender, $args[1]);
+                                        $sender->sendMessage(FactionsPE::getInstance()->translate("faction-created"));
+                                        FactionsPE::getInstance()->setPFacNameTag($sender);
+                                    } else {
+                                        $sender->sendMessage(FactionsPE::getInstance()->translate("faction-already-exists"));
                                     }
-                                }else{
-                                    $sender->sendMessage(FactionsPE::getInstance()->translate("player-not-exist"));
-                                    return false;
+                                } else {
+                                    $sender->sendMessage(FactionsPE::getInstance()->translate("faction-name-tolongorshort"));
+                                    //TODO SEND MAX AND MIN.
                                 }
-                            }else{
-                                $sender->sendMessage(FactionsPE::getInstance()->translate("not-faction-leader"));
-                                return false;
+                            }
+                        } else {
+                            $sender->sendMessage(FactionsPE::getInstance()->translate("has-already-a-faction"));
+                        }
+                        break;
+                    case "delete":
+                    case "del":
+                        FactionsPE::getInstance()->deleteFaction($sender);
+                        break;
+                    case "invite":
+                        break;
+                    case "kick":
+                        if (!empty($args[1])) {
+                            if (FactionsPE::getInstance()->hasFaction($sender)) {
+                                if (FactionsPE::getInstance()->isFactionLeader($sender)) {
+                                    if (FactionsPE::getInstance()->playerExist($args[1])) {
+                                        $who = FactionsPE::getInstance()->getServer()->getPlayer($args[1]);
+                                        if (FactionsPE::getInstance()->getFaction($sender, "FLeader") != $who->getName()) {
+                                            $kicked = FactionsPE::getInstance()->translate("kicked-name-from-faction");
+                                            $kickmsg = str_replace("{who}", $who->getName(), $kicked);
+                                            FactionsPE::getInstance()->kickOutofFaction($sender, $who);
+                                            $sender->sendMessage($kickmsg);
+                                        } else {
+                                            $sender->sendMessage(FactionsPE::getInstance()->translate("cant-kick-leader"));
+                                        }
+                                    } else {
+                                        $sender->sendMessage(FactionsPE::getInstance()->translate("player-not-exist"));
+                                    }
+                                } else {
+                                    $sender->sendMessage(FactionsPE::getInstance()->translate("not-faction-leader"));
+                                }
                             }
                         }
-                    }
-                    break;
-                case "info":
-                    if(empty($args[1])){
-                        FactionsPE::getInstance()->getFactionInfo($sender);
-                    }else{
-                        FactionsPE::getInstance()->getOtherFactionInfo($sender, $args[1]);
-                    }
-                    break;
-                case "help":
-                case "h":
-                    $this->sendHelpList($sender);
-                    break;
-                default:
-                    $sender->sendMessage(FactionsPE::getInstance()->translate("command-usage"));
-                    break;
+                        break;
+                    case "info":
+                        if (isset($args[1])) {
+                            FactionsPE::getInstance()->getOtherFactionInfo($sender, $args[1]);
+                        } else {
+                            FactionsPE::getInstance()->getFactionInfo($sender);
+                        }
+                        break;
+                    case "help":
+                    case "h":
+                        $this->sendHelpList($sender);
+                        break;
+                    default:
+                        $sender->sendMessage(FactionsPE::getInstance()->translate("command-usage"));
+                        break;
+                }
+            } else {
+                $sender->sendMessage(FactionsPE::getInstance()->translate("not-a-player"));
             }
-        }else{
-            $sender->sendMessage(FactionsPE::getInstance()->translate("not-a-player"));
-            return false;
         }
         return true;
     }

@@ -23,8 +23,6 @@ declare(strict_types=1);
 namespace FactionsPE;
 
 use FactionsPE\commands\FactionCommand;
-use FactionsPE\events\DamageEventListener;
-use FactionsPE\events\JoinEventListener;
 use pocketmine\command\overload\CommandEnum;
 use pocketmine\command\overload\CommandParameter;
 use pocketmine\Player;
@@ -53,10 +51,6 @@ class FactionsPE extends PluginBase{
         $this->saveResource("languages/" . $this->getLanguage() . DIRECTORY_SEPARATOR . "gameplay.yml");
     }
 
-    /**
-     * @param string $get
-     * @return bool|mixed
-     */
     public function getConf(string $get){
         $config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
         return $config->get($get);
@@ -71,10 +65,6 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    /**
-     * @param string $totranslate
-     * @return bool|mixed
-     */
     public function translate(string $totranslate){
         $config = new Config($this->getDataFolder() . "languages/" . $this->getLanguage() . DIRECTORY_SEPARATOR . "gameplay.yml");
         return $config->get($totranslate);
@@ -97,15 +87,10 @@ class FactionsPE extends PluginBase{
 
     public function initPConfig(Player $player) : Config{
         return new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml", Config::YAML, [
-            "Faction" => []
+            "Faction" => null
         ]);
     }
 
-    /**
-     * @param Player $player
-     * @param string $get
-     * @return bool|mixed
-     */
     private function getPConf(Player $player, string $get){
         $pconfig = new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml");
         return $pconfig->get($get);
@@ -137,17 +122,12 @@ class FactionsPE extends PluginBase{
         return true;
     }
 
-    public function setPFaction(Player $player, string $name) : void{
+    public function setPFaction(Player $player, $name) : void{
         $pconfig = new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml");
         $pconfig->set("Faction", $name);
         $pconfig->save();
     }
 
-    /**
-     * @param Player $player
-     * @param string $get
-     * @return bool|mixed
-     */
     public function getFaction(Player $player, string $get){
         $faction = new Config($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml");
         return $faction->get($get);
@@ -159,49 +139,32 @@ class FactionsPE extends PluginBase{
         $faction->save();
     }
 
-    /**
-     * @param string $fname
-     * @param string $get
-     * @return bool|mixed
-     */
     public function getOtherFaction(string $fname, string $get){
         $config = new Config($this->getDataFolder() . "factions/" . $fname . ".yml");
         return $config->get($get);
     }
 
     public function getFactionName(Player $player) : string{
-        return (string)$this->getPConf($player, "Faction");
+        return (string) $this->getPConf($player, "Faction");
     }
 
     public function isFactionLeader(Player $player) : bool{
-        if($this->getFaction($player, "FLeader") == $player->getName()){
-            return true;
-        }else{
-            return false;
-        }
+        return $this->getFaction($player, "FLeader") == $player->getName() ? true : false;
     }
 
     public function isInSameFaction(Player $p1, Player $p2) : bool{
-        if($this->getFactionName($p1) != "" and $this->getFactionName($p2) != ""){
-            if($this->getFactionName($p1) == $this->getFactionName($p2)){
-                return true;
-            }else{
-                return false;
-            }
+        if(!empty($this->getFactionName($p1)) and !empty($this->getFactionName($p2))){
+            return $this->getFactionName($p1) == $this->getFactionName($p2) ? true : false;
         }else{
             return false;
         }
     }
 
     public function hasFaction(Player $player) : bool{
-        if(!empty($this->getFactionName($player))){
-            return true;
-        }else{
-            return false;
-        }
+        return !empty($this->getFactionName($player));
     }
 
-    public function getFactionInfo(Player $player) : bool{
+    public function getFactionInfo(Player $player) : void{
         if($this->hasFaction($player)){
             $player->sendMessage(TextFormat::DARK_GRAY . "> " . TextFormat::YELLOW . "Faction Info" . TextFormat::DARK_GRAY . " <");
             $player->sendMessage(TextFormat::BLUE . "Name: " . TextFormat::GRAY . $this->getFaction($player, "FName"));
@@ -212,12 +175,10 @@ class FactionsPE extends PluginBase{
             }
         }else{
             $player->sendMessage($this->translate("have-not-a-faction"));
-            return false;
         }
-        return true;
     }
 
-    public function getOtherFactionInfo(Player $player, string $fname) : bool{
+    public function getOtherFactionInfo(Player $player, string $fname) : void {
         if($this->factionExist($fname)){
             $player->sendMessage(TextFormat::DARK_GRAY . "> " . TextFormat::YELLOW . "Faction Info" . TextFormat::DARK_GRAY . " <");
             $player->sendMessage(TextFormat::BLUE . "Name: " . TextFormat::GRAY . $this->getOtherFaction($fname, "FName"));
@@ -228,30 +189,20 @@ class FactionsPE extends PluginBase{
             }
         }else{
             $player->sendMessage($this->translate("faction-not-exist"));
-            return false;
         }
-        return true;
     }
 
     public function factionExist(string $fname) : bool{
-        if(file_exists($this->getDataFolder() . "factions/" . $fname . ".yml")){
-            return true;
-        }else{
-            return false;
-        }
+        return file_exists($this->getDataFolder() . "factions/" . $fname . ".yml");
     }
 
     public function kickOutofFaction(Player $player, Player $who) : void{
-        $this->setPFaction($who, "");
+        $this->setPFaction($who, null);
         //TODO Kick from member list $this->setFaction($player, "FMembers", "");
     }
 
     public function playerExist(string $name) : bool{
-        if(file_exists($this->getDataFolder() . "players/" . $name . ".yml")){
-            return true;
-        }else{
-            return false;
-        }
+        return file_exists($this->getDataFolder() . "players/" . $name . ".yml");
     }
 
     public function setPFacNameTag(Player $player) : void{
