@@ -41,7 +41,7 @@ class FactionsPE extends PluginBase{
         self::$instance = $this;
         $this->registerCommands();
         $this->initConfig();
-        $this->registerEvents();
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener(), $this);
         $this->getLogger()->info(TextFormat::GREEN . "FactionsPE " . self::VERSION . " Enabled");
     }
 
@@ -69,12 +69,6 @@ class FactionsPE extends PluginBase{
         if($this->getServer()->getName() == "Altay"){
             $cmdmap->getCommand("f")->getOverload("default")->setParameter(0, new CommandParameter("args", CommandParameter::ARG_TYPE_STRING, false, new CommandEnum("args", ["help", "create", "delete", "invite", "kick", "info"])));
         }
-    }
-
-    private function registerEvents() : void{
-        $plmngr = $this->getServer()->getPluginManager();
-        $plmngr->registerEvents(new JoinEventListener($this), $this);
-        $plmngr->registerEvents(new DamageEventListener($this), $this);
     }
 
     /**

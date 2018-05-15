@@ -14,4 +14,7 @@ friendly-attack: false
 
 #Set Faction NameTag.
 faction-nametag: false
+
+#Enable ChatTag
+faction-chattag: true
 ...
