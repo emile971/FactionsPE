@@ -64,6 +64,9 @@ class FactionCommand extends PluginCommand{
                         FactionsPE::getInstance()->deleteFaction($sender);
                         break;
                     case "invite":
+                        if (isset($args[1])){
+                            FactionsPE::getInstance()->inviteToFaction($args[1], FactionsPE::getInstance()->getFactionName($sender));
+                        }
                         break;
                     case "kick":
                         if (!empty($args[1])) {

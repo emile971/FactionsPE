@@ -100,26 +100,23 @@ class FactionsPE extends PluginBase{
         return new Config($this->getDataFolder() . "factions/" . $name . ".yml", Config::YAML, [
             "FName" => $name,
             "FLeader" => $player->getName(),
-            "FMembers" => array($player->getName())
+            "FMembers" => [$player->getName()]
         ]);
     }
 
-    public function deleteFaction(Player $player) : bool{
+    public function deleteFaction(Player $player) : void{
         if($this->hasFaction($player)){
             if($this->isFactionLeader($player)){
                 if(unlink($this->getDataFolder() . "factions/" . $this->getFactionName($player) . ".yml")){
                     $player->sendMessage($this->translate("faction-deleted"));
-                    $this->setPFaction($player, "");
+                    $this->setPFaction($player, null);
                 }
             }else{
                 $player->sendMessage($this->translate("not-faction-leader"));
-                return false;
             }
         }else{
             $player->sendMessage($this->translate("have-not-a-faction"));
-            return false;
         }
-        return true;
     }
 
     public function setPFaction(Player $player, $name) : void{
@@ -198,7 +195,8 @@ class FactionsPE extends PluginBase{
 
     public function kickOutofFaction(Player $player, Player $who) : void{
         $this->setPFaction($who, null);
-        //TODO Kick from member list $this->setFaction($player, "FMembers", "");
+        unset($this->getFaction($player, "FMembers")[array_search($who->getName(), $this->getFaction($player, "FMembers"))]);
+        $this->setFaction($player, "FMembers", $this->getFaction($player, "FMembers"));
     }
 
     public function playerExist(string $name) : bool{
@@ -212,6 +210,12 @@ class FactionsPE extends PluginBase{
             }else{
                 $player->setNameTag(TextFormat::WHITE . $player->getName());
             }
+        }
+    }
+
+    public function inviteToFaction(Player $player, $fname){
+        if ($this->playerExist($player->getName())){
+            //TODO
         }
     }
 
