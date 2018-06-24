@@ -44,9 +44,15 @@ class FactionsPE extends PluginBase{
     }
 
     private function initConfig() : void{
-        @mkdir($this->getDataFolder());
-        @mkdir($this->getDataFolder() . "factions/");
-        @mkdir($this->getDataFolder() . "players/");
+        if(!is_dir($this->getDataFolder())){
+            @mkdir($this->getDataFolder());
+        }
+        if(!is_dir($this->getDataFolder() . "factions/")){
+            @mkdir($this->getDataFolder() . "factions/");
+        }
+        if(!is_dir($this->getDataFolder() . "players/")){
+            @mkdir($this->getDataFolder() . "players/");
+        }
         $this->saveResource("config.yml");
         $this->saveResource("languages/" . $this->getLanguage() . DIRECTORY_SEPARATOR . "gameplay.yml");
     }
@@ -91,7 +97,7 @@ class FactionsPE extends PluginBase{
         ]);
     }
 
-    private function getPConf(Player $player, string $get){
+    private function getPConf(Player $player, string $get) : Config{
         $pconfig = new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml");
         return $pconfig->get($get);
     }
@@ -119,7 +125,7 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    public function setPFaction(Player $player, $name) : void{
+    public function setPFaction(Player $player, string $name) : void{
         $pconfig = new Config($this->getDataFolder() . "players/" . $player->getName() . ".yml");
         $pconfig->set("Faction", $name);
         $pconfig->save();
@@ -175,7 +181,7 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    public function getOtherFactionInfo(Player $player, string $fname) : void {
+    public function getOtherFactionInfo(Player $player, string $fname) : void{
         if($this->factionExist($fname)){
             $player->sendMessage(TextFormat::DARK_GRAY . "> " . TextFormat::YELLOW . "Faction Info" . TextFormat::DARK_GRAY . " <");
             $player->sendMessage(TextFormat::BLUE . "Name: " . TextFormat::GRAY . $this->getOtherFaction($fname, "FName"));
@@ -213,7 +219,7 @@ class FactionsPE extends PluginBase{
         }
     }
 
-    public function inviteToFaction(Player $player, $fname){
+    public function inviteToFaction(Player $player, string $fname) : void{
         if ($this->playerExist($player->getName())){
             //TODO
         }
