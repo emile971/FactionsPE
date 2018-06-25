@@ -1,0 +1,16 @@
+---
+command-usage: §6Komutlar hakkında yardım almak için /f help komutu kullanın.
+faction-already-exists: §cBöyle bir klan zaten var.
+not-faction-leader: §eSiz bu klanın lideri değilsiniz.
+faction-name-tolong: §cKlan adı çok uzun veya çok kısa.
+not-a-player: §bBunu yapabilmek için bir oyuncu olmanız gerekir.
+faction-created: §aKlan oluşturuldu.
+faction-deleted: §4Klan silindi.
+cant-attack-fmember: §cKlan arkaşına saldıramazsın.
+has-already-a-faction: §cZaten bir klandasın.
+have-not-a-faction: §cKlanın yok.
+faction-not-exist: §cKlan bulunamadı.
+cant-kick-leader: §eLideri klandan atamazsın.
+kicked-name-from-faction: §a{who} tarafından klandan atıldınız.
+player-not-exist: §cOyuncu bulunamadı.
+...

@@ -86,6 +86,8 @@ class FactionsPE extends PluginBase{
                 return "de";
             case "fr":
                 return "fr";
+            case "tr":
+                return "tr";
             default:
                 return "en";
         }
